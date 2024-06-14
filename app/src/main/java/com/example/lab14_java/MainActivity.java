@@ -3,6 +3,7 @@ package com.example.lab14_java;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +14,8 @@ import androidx.core.view.WindowInsetsCompat;
 import java.security.acl.Owner;
 
 public class MainActivity extends AppCompatActivity {
+    private TextView textView;
+    private int counter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,5 +36,28 @@ public class MainActivity extends AppCompatActivity {
             }
             setContentView(R.layout.page2);
         });
+        textView = findViewById(R.id.textView1);
+        runCounter();
+    }
+
+    private void runCounter() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true) {
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            textView.setText(String.format("counter=%d", counter++));
+                        }
+                    });
+                }
+            }
+        }).start();
     }
 }
